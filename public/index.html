@@ -1,0 +1,333 @@
+<html>
+    <head>
+        <style>
+        .fk {
+            background-color:#ff6632;
+        }
+        .traditional {
+            background-color:#00f0f0;
+        }
+
+        tr:nth-child(even) {background-color: #f2f2f2;}  
+        .jsonb {
+            background-color:#6663f6;
+        }
+
+        </style>
+
+
+    </head>
+<body>
+
+<ul>
+        <li><a href='index.html'>postgres info</a></li>
+        <li><a href='about.html'>about info</a></li>
+        <li><a href='tdd.html'>faux postman</a></li>
+
+
+
+     </ul>
+<hr>
+
+
+<table border='1'>
+        <tr class='jsonb'>
+                <td>
+            
+            
+            <textarea rows=8 cols=70>
+CREATE TABLE orders (
+ID serial NOT NULL PRIMARY KEY,
+info json NOT NULL
+);
+</textarea>            
+</td><td>Mixing JSON and postgres: http://www.postgresqltutorial.com/postgresql-json/ </td></tr>
+
+
+
+
+
+
+
+
+   <tr class='jsonb'>
+        <td>
+    
+    
+    <textarea rows=8 cols=70>
+INSERT INTO orders (info)
+VALUES
+(
+'{ "customer": "Lily Bush", "items": {"product": "Diaper","qty": 24}}'
+),
+(
+'{ "customer": "Josh William", "items": {"product": "Toy Car","qty": 1}}'
+),
+(
+'{ "customer": "Mary Clark", "items": {"product": "Toy Train","qty": 2}}'
+);            
+</textarea>            
+</td><td>Adding into the orders table </td></tr>
+
+
+
+
+<tr class='jsonb'>
+        <td>
+    
+    
+    <textarea rows=8 cols=70>
+SELECT
+MIN (
+CAST (
+info -> 'items' ->> 'qty' AS INTEGER
+)
+),
+MAX (
+CAST (
+info -> 'items' ->> 'qty' AS INTEGER
+)
+),
+SUM (
+CAST (
+info -> 'items' ->> 'qty' AS INTEGER
+)
+),
+AVG (
+CAST (
+info -> 'items' ->> 'qty' AS INTEGER
+)
+)          
+FROM
+orders</textarea>            
+</td><td>Doing sums<br>
+First  info -> 'items' returns items as JSON objects. And then info->'items'->>'product' returns all products as text.
+
+</td></tr>
+
+
+
+
+
+<!-- // ///////////////////////////////// // -->
+
+<tr><td>psql -d postgres -U me </td><td>Get to postgres CLI</td></tr>
+<tr><td>CREATE ROLE me WITH LOGIN PASSWORD 'password';</td><td>Create user named 'me' with password 'password'</td></tr>
+<tr><td>ALTER ROLE me CREATEDB;</td><td>Make 'me' able to able to create a database</td></tr>
+<tr><td>CREATE DATABASE api;</td><td>Create database named 'api'</td></tr>
+<tr><td>\c api</td><td>Use database 'api'</td></tr>
+<tr><td>\q</td><td>Exit psql connection</td></tr>
+<tr><td>\c</td><td>Connect to a new database</td></tr>
+<tr><td>\dt</td><td>List all tables</td></tr>
+<tr><td>\du</td><td>List all roles</td></tr>
+<tr><td>\d table_name</td><td>describe</td></tr>
+<tr><td>\list</td><td>List databases</td></tr>
+<tr><td colspan='2'>https://www.endpoint.com/blog/2013/06/03/postgresql-as-nosql-with-data-validation</td></tr>
+<tr><td colspan='2'>https://blog.logrocket.com/setting-up-a-restful-api-with-node-js-and-postgresql-d96d6fc892d8/</td></tr>
+
+
+
+
+<tr class="traditional">
+    <td>
+INSERT INTO users (name, email) VALUES ('Andy', 'chicken@bird.com')
+    </td>
+<td>
+Traditional insert
+</td>
+</tr>
+
+<tr>
+<td>
+<textarea rows=3 cols=70>
+CREATE TABLE foo (
+data JSON
+);
+</textarea>
+</td>
+<td>
+Create table foo of type JSON which has zero validation
+</td>
+</tr>
+<!-- ............ -->
+<tr>
+<td>
+<textarea rows=8 cols=70>
+INSERT INTO foo(data) VALUES('{
+"id": 1,
+"name": "shoes",
+"description": "blue_shoes",
+"price": 12.34,
+"currency": "dollars",
+"in_stock": 5
+}');
+</textarea>
+</td>
+<td>
+Well formed insert into table foo
+</td>
+</tr>
+<!-- ............ -->
+<tr>
+<td>
+<textarea rows=8 cols=70>
+INSERT INTO foo(data) VALUES('{
+"id": 1,
+"name": "shoes",
+"description": "blue_shoes",
+"price": 12.34,
+"currency": "dollars",
+"in_stock": 5,
+}');
+</textarea>
+</td>
+<td>
+Ill formed insert into table foo <br>( notice the trailing ,): This would cause an error
+</td>
+</tr>
+<!-- ............ -->
+<tr>
+<td>
+<textarea rows=8 cols=120>
+CREATE TABLE validatedTable (
+data JSON,
+CONSTRAINT validate_id CHECK ((data->>'id')::integer >= 1 AND (data->>'id') IS NOT NULL ),
+CONSTRAINT validate_name CHECK (length(data->>'name') > 0 AND (data->>'name') IS NOT NULL ),
+CONSTRAINT validate_description CHECK (length(data->>'description') > 0  AND (data->>'description') IS NOT NULL ),
+CONSTRAINT validate_price CHECK ((data->>'price')::decimal >= 0.0 AND (data->>'price') IS NOT NULL),
+CONSTRAINT validate_currency CHECK (data->>'currency' = 'dollars' AND (data->>'currency') IS NOT NULL),
+CONSTRAINT validate_in_stock CHECK ((data->>'in_stock')::integer >= 0 AND (data->>'in_stock') IS NOT NULL )
+);
+</textarea>
+</td>
+<td>
+The table 'validatedTable' will have validation
+</td>
+</tr>
+<!-- ............ -->
+<tr>
+<td>
+<textarea rows=8 cols=120>
+INSERT INTO validatedTable(data) VALUES('{
+"id": 1,
+"name": "d",   
+"price": 1.0,  
+"currency": "dollars",   
+"in_stock": 5
+}');
+</textarea>
+</td>
+<td>
+Intentionally failing insert yeilds:<br>
+ERROR:  new row for relation "validatedtable" violates check constraint "validate_description"
+DETAIL:  Failing row contains ({
+"id": 1,
+"name": "d",   
+"...).
+</td>
+</tr>
+<!-- ............ -->
+<tr>
+<td>
+<textarea rows=8 cols=120>
+INSERT INTO validatedTable(data) VALUES('{
+"id": 1,
+"name": "d",   
+"price": 1.0,  
+"currency": "dollars",   
+"in_stock": 6,
+"description":"description"   
+}');
+</textarea>
+</td>
+<td>
+Successful insert yeilds:<br>
+INSERT 0 1
+</td>
+</tr>
+
+  
+
+
+<tr  class='fk'>
+        <td >
+        <textarea rows=8 cols=120>
+CREATE TABLE so_headers (
+id SERIAL PRIMARY KEY,
+customer_id INTEGER,
+ship_to VARCHAR (255)
+);
+        </textarea>
+        </td>
+        <td>
+STEP1: Create  a table
+        </td>
+        </tr>
+        
+          
+<tr class='fk'>
+                <td>
+                <textarea rows=8 cols=120>
+CREATE TABLE so_items (
+item_id int4 NOT NULL,   
+so_id int4 REFERENCES so_headers(id) ON DELETE CASCADE,
+product_id int4,
+qty int4,
+net_price numeric,
+PRIMARY KEY (item_id,so_id)
+);
+                </textarea>
+                </td>
+                <td>
+STEP 2: Create  a table w/ a FK 
+                </td>
+                </tr>
+                
+                  
+
+
+               
+          
+<tr class='fk'>
+        <td>
+        <textarea rows=8 cols=120>
+INSERT INTO so_headers (customer_id, ship_to) VALUES ('7783', 'PDX')
+        </textarea>
+        </td>
+        <td>
+FK insert 1
+        </td>
+</tr>
+
+
+<tr class='fk'>
+        <td>
+        <textarea rows=8 cols=120>
+INSERT INTO so_items ( item_id, so_id, product_id, qty, net_price ) VALUES (1, 1,  2, 2, 10);
+INSERT INTO so_items ( item_id, so_id, product_id, qty, net_price ) VALUES (2, 1,  2, 2, 10);
+        </textarea>
+        </td>
+        <td>
+FK insert 2
+        </td>
+        </tr>
+        
+
+        
+          
+
+
+         
+                
+        
+
+
+
+</table>
+
+
+
+
+
+</body>
+</html>
