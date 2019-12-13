@@ -33,7 +33,7 @@ function doGet() {
 
 function doPost() { 
     const url = 'http://localhost:3030/getPaginatedEntries'
-    let opts = {"bottom":"water"}
+    let opts = {"t1":new Date().getTime()}
      sendPost(url, opts).then(data => {
         alert( JSON.stringify(data)); 
     }); 

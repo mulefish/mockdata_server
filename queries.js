@@ -29,22 +29,17 @@ console.log( "Using database: "  + cc.bgGreen(database))
 const getPaginatedEntries = (request, response) => {
   caller.showStack()
 
-  const one_of_four = request.body
-  console.log("IN")
-  caller.showObj(request.body)
-  console.log("END")
-
-  const two_of_four = new Date().getTime() 
-
-
-  const three_of_four = new Date().getTime() 
-
+  const t1 = request.body.t1 
+  const t2 = new Date().getTime() 
+  const t3 = new Date().getTime() 
+  let ary = ["A","B","C"]
   let responseObj = {
-    two_of_four,
-    three_of_four
+    t1,
+    t2,
+    t3,
+    results:ary
   }
-
-  caller.showObj(responseObj)
+  // caller.showObj(responseObj)
   response.status(200).json( responseObj )
 
 }

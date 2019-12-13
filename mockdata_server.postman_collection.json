@@ -1,0 +1,67 @@
+{
+	"info": {
+		"_postman_id": "1ee3ce1c-ab4d-48d0-91d9-a5257646b34e",
+		"name": "mockdata",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "get all entries",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3030/getEntries",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3030",
+					"path": [
+						"getEntries"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get count of all entries",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3030/getEntriesCount",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3030",
+					"path": [
+						"getEntriesCount"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post paginated entries",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3030/getPaginatedEntries",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3030",
+					"path": [
+						"getPaginatedEntries"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
