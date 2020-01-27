@@ -18,8 +18,6 @@ console.log( "Using database: "  + cc.bgGreen(database))
 //     pool.query('INSERT INTO validatedTable (data) VALUES($1)', [request.body], (error, results) => {
 //     if (error) {
 //       console.log("Error " + error )
-//       response.status(500).send(`Validation constraint fail ${error}`)
-//     } else {
 //       response.status(201).send(`insert into validatedtable ${JSON.stringify(request.body)}`)
 //     }
 //   })
@@ -64,13 +62,16 @@ const countEntries = (request, response) => {
   // caller.showStack()
   // const ary = ["hello there" , "one","two","helloworld"]
   // response.status(200).json(ary)
+  console.log("hello")
   caller.showStack()
   pool.query('SELECT count(*) FROM entries', (error, results) => {
+      console.log("what ")
     if (error) {
       console.log("Error " + error )
       response.status(500).send(`getJsonObjects fail! `)
     } else {
-      response.status(200).json( results.rows)
+      response.status(200).json( JSON.stringify(results.rows))
+      caller.emit(JSON.stringify(results.rows, null, 2 ))
     }
   })
 }

@@ -1,6 +1,62 @@
 <html>
 <head>
-    <script src="./restful_client_logic.js"></script>
+
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
+    <!-- <script src="./restful_client_logic.js"></script> -->
+    <script>
+    async function sendGet(url)     {
+    const response = await fetch(url);
+    const data = await response.json()
+    return data;
+}
+
+async function sendPost(url, opts)     {
+    const response = await fetch(url,{      
+    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+    mode: 'cors', // no-cors, *cors, same-origin
+    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: 'same-origin', // include, *same-origin, omit
+    headers: {
+      'Content-Type': 'application/json'
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    redirect: 'follow', // manual, *follow, error
+    referrer: 'no-referrer', // no-referrer, *client
+    body: JSON.stringify(opts) // body data type must match "Content-Type" header
+    });
+    const data = await response.json()
+    return data;
+}
+
+function doGet() { 
+    const url = 'http://localhost:3030/getEntries'  
+    sendGet(url).then(data => {
+        data.forEach((item,i) =>{ 
+            if ( i === 0 ) { 
+                document.getElementById("output").value=JSON.stringify(item, null, 2 )
+            }
+        })
+        document.getElementById("countItems").innerHTML = data.length
+    }); 
+}
+
+function countTheEntries() { 
+    const url = 'http://localhost:3030/countEntries'  
+    sendGet(url).then(data => {
+        document.getElementById("output").value=""
+        document.getElementById("countItems").innerHTML = JSON.stringify(data, null, 2 )
+    }); 
+}
+
+
+function doPost() { 
+    const url = 'http://localhost:3030/getPaginatedEntries'
+    let opts = {"t1":new Date().getTime()}
+     sendPost(url, opts).then(data => {
+        alert( JSON.stringify(data)); 
+    }); 
+}
+    </script>
 </head>
 <body>
     <ul>
@@ -14,9 +70,26 @@
 <hr></hr>
         This is going to http://localhost:3030/url
         <hr/>
-        <button onclick="doGet()">clickme to send RESTful call</button>
-        <button onclick="doPost()">doPost</button>
+        <button onclick="doGet()">doGet()</button>
+        <button onclick="doPost()">doPost()</button>
+        <button onclick="countTheEntries()">countTheEntries()</button>
+
         <hr/>
+        <table border='1'>
+            <tr>
+                <td>
+                <h5>This is a count of the returned</h5>
+                    <div id='countItems'></div>
+                    </td>
+            </tr>
+
+            <tr>
+                <td>
+                <h5>This is just the 1st object - I just wanted to see it.</h5>
+                <textarea id="output" rows='20' cols='50' ></textarea>
+                </td>
+            </tr>
+        </table>
 
     </body>
 </html>

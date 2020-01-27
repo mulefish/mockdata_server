@@ -33,7 +33,7 @@ app.use(
 app.get('/getEntries', db.getEntries)
 app.get('/getEntriesCount', db.getEntriesCount)
 app.post('/getPaginatedEntries', db.getPaginatedEntries)
-
+app.get('/countEntries', db.countEntries)
 app.listen(port, () => {
   const coloredPort =  cc.bgGreen( port )
   console.log(`App running on port: ${coloredPort}`)

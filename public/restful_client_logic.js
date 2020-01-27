@@ -22,14 +22,30 @@ async function sendPost(url, opts)     {
     return data;
 }
 
-
-
 function doGet() { 
-    const url = 'http://localhost:3030/getEntriesCount'
+    const url = 'http://localhost:3030/getEntries'  
     sendGet(url).then(data => {
-        alert( JSON.stringify(data)); 
+        console.log("doGet2 ",  JSON.stringify(data)); 
+        alert(data)
+        return data
     }); 
 }
+
+
+
+// function doGet() { 
+//     const url = 'http://localhost:3030/getEntries'  
+//     let result =  doGet2(url)
+//     alert("result " + result )
+// }
+
+// function doGet() { 
+//     const url = 'http://localhost:3030/getEntries'
+//     sendGet(url).then(data => {
+//         alert( JSON.stringify(data)); 
+//     }); 
+// }
+
 
 function doPost() { 
     const url = 'http://localhost:3030/getPaginatedEntries'
