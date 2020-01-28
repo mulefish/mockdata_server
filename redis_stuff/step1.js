@@ -1,21 +1,23 @@
 const redis = require("redis"); 
 const client = redis.createClient();
  
-// if you'd like to select database 3, instead of 0 (default), call
-// client.select(3, function() { /* ... */ });
- 
 client.on("error", function (err) {
     console.log("Error!  " + err);
     console.log("Make sure redis is running! /Users/paul.montgomery/Downloads/redis-6.0-rc1/src/redis-server")
 });
  
-client.set("string key", "string val", redis.print);
-client.hset("hash key", "hashtest 1", "some value", redis.print);
-client.hset(["hash key", "hashtest 2", "some other value"], redis.print);
-client.hkeys("hash key", function (err, replies) {
-    console.log(replies.length + " replies:");
-    replies.forEach(function (reply, i) {
-        console.log("    " + i + ": " + reply);
-    });
-    client.quit();
-});
+
+client.hset("person", "id", "1"); 
+client.hset("person", "Fname", "paul"); 
+client.hset("person", "State", "Oregon"); 
+client.hset("person", "Color", "green"); 
+client.HGETALL("person", function(err, x) {
+    console.log ( x )
+})
+
+function cleanup() {
+    console.log("Now I am done ")
+    client.quit()
+}
+// clean up!
+client.flushall('ASYNC', cleanup);
