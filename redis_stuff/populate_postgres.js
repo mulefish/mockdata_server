@@ -59,8 +59,8 @@ const selectStuff = () => {
 
 function main() { 
 
-  let limit =  1000
-  let size = 1000
+  let limit =  2 // 1000
+  let size = 2 // 1000
   let ts = new Date().getTime()
   for ( let i = 0; i < limit; i++ ) { 
 

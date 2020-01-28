@@ -75,6 +75,31 @@ const countEntries = (request, response) => {
   })
 }
 
+const getSomeEntries = (request, response ) => {
+  caller.showStack()
+
+  const start = request.query.start;
+  const stop = request.query.stop;
+  const t1 = request.query.t1; 
+
+  pool.query('SELECT * FROM entries limit 3', (error, results) => {
+    if (error) {
+      console.log("Error " + error )
+      response.status(500).send(`getJsonObjects fail! `)
+    } else {
+
+      const t2 = new Date().getTime()
+      const meta = {
+        start:start,
+        stop:stop,
+        t1:t1,
+        t2:t2
+      }
+      results.rows.push(meta)
+      response.status(200).json( results.rows)
+    }
+  })
+}
 
 
 const getEntries = (request, response) => {
@@ -204,7 +229,9 @@ module.exports = {
   getEntries,
   getEntriesCount,
   getPaginatedEntries,
-  countEntries
+  countEntries,
+  getSomeEntries
+
   // getUsers,
   // getUserById,
   // createUser,

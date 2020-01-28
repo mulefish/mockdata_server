@@ -48,6 +48,56 @@ function countTheEntries() {
     }); 
 }
 
+function getSomeEntries() {
+    const t1 = new Date().getTime()
+    let start = 1
+    let stop = 3
+    const jump = 3 
+    for ( let i = 0; i < 10; i++) {
+        fauxStream(t1, i, start, stop)
+        start += jump
+        stop += jump
+    }
+
+
+}    
+    
+function fauxStream(t1,loop, start, stop  ) { 
+    //http://localhost:3030/getSomeEntries?start=1&end=20&t1=2
+    const url = `http://localhost:3030/getSomeEntries?start=${start}&stop=${stop}&t1=${t1}`
+    sendGet(url).then(data => {
+        console.log("DATA: " + JSON.stringify( data,null, 2 ))
+        document.getElementById("start").innerHTML = start
+        document.getElementById("stop").innerHTML = stop
+
+
+        /* 
+        document.getElementById("start").innerHTML =  start
+        document.getElementById("end").innerHTML =  end
+        const delta1 = 
+        <button onclick="getSomeEntries()">getSomeEntries</button>
+            </td>    
+            <td>
+                <div id="start"></div>
+            </td>
+            <td>
+                <div id="end"></div>
+            </td>
+            <td>
+                <div id="delta1"></div>
+            </td>
+            <td>
+                <div id="delta2"></div>
+
+
+        document.getElementById("output").value=""
+        document.getElementById("countItems").innerHTML = JSON.stringify(data, null, 2 )
+        */ 
+    }); 
+
+
+}
+
 
 function doPost() { 
     const url = 'http://localhost:3030/getPaginatedEntries'
@@ -73,7 +123,25 @@ function doPost() {
         <button onclick="doGet()">doGet()</button>
         <button onclick="doPost()">doPost()</button>
         <button onclick="countTheEntries()">countTheEntries()</button>
-
+        <table border='1'>
+            <tr>
+            <td>
+                <button onclick="getSomeEntries()">getSomeEntries</button>
+            </td>    
+            <td>
+                <div id="start"></div>
+            </td>
+            <td>
+                <div id="stop"></div>
+            </td>
+            <td>
+                <div id="delta1"></div>
+            </td>
+            <td>
+                <div id="delta2"></div>
+            </td>
+            </tr>
+        </table>
         <hr/>
         <table border='1'>
             <tr>

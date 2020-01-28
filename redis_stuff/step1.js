@@ -7,6 +7,8 @@ client.on("error", function (err) {
 });
  
 
+
+
 client.hset("person", "id", "1"); 
 client.hset("person", "Fname", "paul"); 
 client.hset("person", "State", "Oregon"); 
@@ -16,8 +18,6 @@ client.HGETALL("person", function(err, x) {
 })
 
 function cleanup() {
-    console.log("Now I am done ")
     client.quit()
 }
-// clean up!
 client.flushall('ASYNC', cleanup);

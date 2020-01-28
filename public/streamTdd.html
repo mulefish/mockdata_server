@@ -1,0 +1,109 @@
+<html>
+<head>
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
+    <select id='chuck_size'>
+        <option>1</option>
+        <option>10</option>
+        <option>100</option>
+        <option>1000</option>
+        <option>10000</option>
+        <option>500000</option>
+    </select>
+<script>
+let jump = 3 // how big of a 'chuck' to take
+let thedata = [] 
+
+
+async function sendGet(url)     {
+    const response = await fetch(url);
+    const data = await response.json()
+    return data;    
+}
+
+function getSomeEntries_step1() {
+    const choice = document.getElementById("chuck_size")
+    jump = parseInt(choice.options[choice.selectedIndex].value)
+    console.log("Jump will be " + jump )
+    const t1 = new Date().getTime()
+    let start = 1
+    let stop = jump
+    for ( let loop = 0; loop < 10; loop++) {
+        getSomeEntries_step2(t1, loop, start, stop)
+        start += jump
+        stop += jump
+    }
+}        
+
+
+
+function getSomeEntries_step2(t1,loop, start, stop  ) { 
+    //http://localhost:3030/getSomeEntries?start=1&end=20&t1=2222
+    const url = `http://localhost:3030/getSomeEntries?start=${start}&stop=${stop}&t1=${t1}`
+    const t2 = new Date().getTime()
+
+    sendGet(url).then(data => {
+
+        
+
+        document.getElementById("start").innerHTML = start
+        document.getElementById("stop").innerHTML = stop
+        document.getElementById("loop").innerHTML = loop
+        
+        const before = data.length
+        const meta = data.pop()
+        thedata = thedata.concat(data);
+        const milSec_at_DB_layer = meta.t1 - t1
+        const milSec_at_Transport_layer = meta.t2 - t2
+
+        const after = data.length
+
+        document.getElementById("delta1").innerHTML = milSec_at_DB_layer
+        document.getElementById("delta2").innerHTML = milSec_at_Transport_layer
+//        console.log( url )
+//        console.log( 'jump is ' + jump + '   ' +  loop + " has " +  thedata.length )
+        console.log("loop " + loop + " length " + thedata.length )
+        // console.log(JSON.stringify( meta ), 'milSec_at_DB_layer ', milSec_at_DB_layer, 'milSec_at_Transport_layer ', milSec_at_Transport_layer )
+    }); 
+}
+
+function pickRandomItemAndShowIt() { 
+    const index = Math.floor(Math.random()*thedata.length)
+    const item = thedata[index]
+    console.log( "The " + index + " of " + thedata.length + " is:\n" + JSON.stringify(item))
+}
+
+</script>
+
+</head>
+<body>
+
+        <button onclick='pickRandomItemAndShowIt()'>pickRandomItemAndShowIt</button>
+        <table border='1'>
+            <tr>
+            <td>
+                <button onclick="getSomeEntries_step1()">getSomeEntries</button>
+            </td>    
+            <td>loop</td>
+            <td>
+                <div id="loop"></div>
+            </td>
+            <td>start</td>
+            <td>
+                <div id="start"></div>
+            </td>
+            <td>stop</td>
+            <td>
+                <div id="stop"></div>
+            </td>
+            <td>delta1</td>
+            <td>
+                <div id="delta1"></div>
+            </td>
+            <td>delta2</td>
+            <td>
+                <div id="delta2"></div>
+            </td>
+            </tr>
+        </table>
+    </body>
+</html>
