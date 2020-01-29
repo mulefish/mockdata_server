@@ -5,6 +5,16 @@ const cc = require('cli-color')
 const Pool = require('pg').Pool
 const QueryStream = require('pg-query-stream')
 const JSONStream = require('JSONStream')
+const bodyParser = require('body-parser')
+
+app.use(express.static('public')) // Try about.html
+app.use(bodyParser.json())
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+)
+
 
 const pool = new Pool({
     user: 'me',

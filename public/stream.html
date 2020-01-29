@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  </head>
+  <body>
+    <header>
+    </header>
+
+work! 
+    <script src="/oboe-browser.js"></script>
+    <script>
+    
+//    oboe('/product.json')
+let url = 'localhost:3030/test5'
+//url  = '/product.json'
+oboe(url)
+  .node('*', function(x) {
+//    console.log('root', x)
+    console.log( JSON.stringify( x ))
+
+  })
+  .done(function(data) {
+//    console.log('data', data)
+    console.log("Finished")
+  })    
+    </script>
+
+
+oboe(url)
+.node 
+  .node('!', function(x) {
+    console.log('root', x)
+  })
+  .node('{id value}', function(x) {
+    console.log('object', x)
+  })
+  .done(function(data) {
+    console.log('data', data)
+  })    
+
+  </body>
+</html>
