@@ -1,71 +1,93 @@
-// const pg = require('pg')
+const express = require('express')
+const app = express()
+const port = 3030
+const cc = require('cli-color')
+const Pool = require('pg').Pool
 const QueryStream = require('pg-query-stream')
 const JSONStream = require('JSONStream')
-const Pool = require('pg').Pool
-const database = "sca"
+
 const pool = new Pool({
-  user: 'me',
-  host: 'localhost',
-  database: 'sca',
-  password: 'password',
-  port: 5432,
+    user: 'me',
+    host: 'localhost',
+    database: 'sca',
+    password: 'password',
+    port: 5432,
 })
 
-
-function self_test(){
-pool.connect(function(err, client, done) {
-//    client.query(/* etc, etc */)
-//    done()
-if (err) { 
-    throw err;
+const testFunc1 = (request, response) => {
+    console.log("testFunc1 plain vanilla http server")
+    const responseObj = {
+        'hello': 'world'
+    }
+    response.status(200).json(responseObj)
 }
-    const query = new QueryStream('SELECT * FROM generate_series(0, $1) num', [10])
-    const stream = client.query(query)
-    stream.on('end', done)
-    stream.pipe(JSONStream.stringify()).pipe(process.stdout)
+
+const testFunc2 = (request, response) => {
+    console.log("testFunc2 simple db query")
+    pool.query('SELECT * FROM entries limit 1', (error, results) => {
+        if (error) {
+            console.log("Error " + error)
+            response.status(500).send(`getJsonObjects fail! `)
+        } else {
+            response.status(200).json(results.rows)
+        }
     })
-} 
-// self_test()
+}
 
 
-
-function self_test2(){
-
-    const qs = new QueryStream('SELECT * FROM entries limit 10');
-
+const testFunc3 = (request, response) => {
+    console.log("testFunc3 simple streams to stdout")
     pool.connect(function(err, client, done) {
-        if (err) { 
+        if (err) {
             throw err;
         }
-        // const query = new QueryStream('SELECT * FROM generate_series(0, $1) num', [2])
-        const query = new QueryStream('SELECT * entries limit 10')
+        const query = new QueryStream('SELECT * FROM generate_series(0, $1) num', [1000])
         const stream = client.query(query)
         stream.on('end', done)
         stream.pipe(JSONStream.stringify()).pipe(process.stdout)
     })
-} 
-self_test2()  
+}
 
-
-/*
-pg.connect((err, client, done) => {
-    if (err) throw err;
-    const query = new QueryStream('SELECT * FROM generate_series(0, $1) num', [1000000])
-    const stream = client.query(query)
-    //release the client when the stream is finished
-    stream.on('end', done)
-    stream.pipe(JSONStream.stringify()).pipe(process.stdout)
+const testFunc4 = (request, response) => {
+  console.log("testFunc4 simple streams to http")
+  pool.connect(function(err, client, done) {
+      if (err) {
+          throw err;
+      }
+      const query = new QueryStream('SELECT * FROM generate_series(0, $1) num', [1000])
+      const stream = client.query(query)
+      stream.on('end', done)
+      stream.on('data', (row) => {
+        response.write(JSON.stringify(row));
+        response.write(',');
+      });      
   })
-*/
+}
 
-/*
-//pipe 1,000,000 rows to stdout without blowing up your memory usage
-pg.connect((err, client, done) => {
-  if (err) throw err;
-  const query = new QueryStream('SELECT * FROM generate_series(0, $1) num', [1000000])
-  const stream = client.query(query)
-  //release the client when the stream is finished
-  stream.on('end', done)
-  stream.pipe(JSONStream.stringify()).pipe(process.stdout)
+const testFunc5 = (request, response) => {
+  console.log("testFunc5 simple streams to http with simple query")
+  pool.connect(function(err, client, done) {
+      if (err) {
+          throw err;
+      }
+      const query = new QueryStream('SELECT * FROM entries limit 10')
+      const stream = client.query(query)
+      stream.on('end', done)
+      stream.on('data', (row) => {
+        response.write(JSON.stringify(row));
+        response.write(',');
+      });      
+  })
+}
+
+
+
+app.get('/test', testFunc1)
+app.get('/test2', testFunc2)
+app.get('/test3', testFunc3)
+app.get('/test4', testFunc4)
+app.get('/test5', testFunc5)
+app.listen(port, () => {
+    const coloredPort = cc.bgGreen(port)
+    console.log(`App running on port: ${coloredPort}`)
 })
-*/
