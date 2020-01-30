@@ -1,42 +1,81 @@
 <!DOCTYPE html>
 <html>
-  <head>
-  </head>
-  <body>
-    <header>
-    </header>
-
-work! 
-    <script src="/oboe-browser.js"></script>
-    <script>
-    
-//    oboe('/product.json')
-let url = 'localhost:3030/test5'
-//url  = '/product.json'
-oboe(url)
-  .node('*', function(x) {
-//    console.log('root', x)
-    console.log( JSON.stringify( x ))
-
-  })
-  .done(function(data) {
-//    console.log('data', data)
-    console.log("Finished")
-  })    
-    </script>
+    <head>
+        <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
+    </head>
+<body>
+    <ul>
+        <li><a href='index.html'>index.html</a></li>
+        <li><a href='about.html'>about.html</a></li>
+        <li><a href='tdd.html'>tdd.html</a></li>
+        <li><a href='stream.html'>stream.html</a></li>
 
 
-oboe(url)
-.node 
-  .node('!', function(x) {
-    console.log('root', x)
-  })
-  .node('{id value}', function(x) {
-    console.log('object', x)
-  })
-  .done(function(data) {
-    console.log('data', data)
-  })    
 
-  </body>
+     </ul>
+<hr>
+
+<script src="/oboe-browser.js"></script>
+<script>
+function getJson() {
+    let url  = '/product.json'
+    oboe(url)
+    .node('*', function(x) {
+        console.log( JSON.stringify( x ))
+    })
+    .done(function(data) {
+        console.log("Finished")
+    })    
+}
+function getTest5() {
+    let url  = '/test5'
+    console.log('test5()')
+    oboe(url)
+    .node('*', function(x) {
+        console.log( JSON.stringify( x ))
+    })
+    .done(function(data) {
+        console.log("All done")
+    })    
+}
+function getTest6() {
+    let url  = '/test6'
+    console.log('test6()! ')
+    oboe(url)
+    .node('*', function(x) {
+        console.log(x)
+    })
+    .done(function(data) {
+        console.log("Finished")
+    })    
+}
+
+
+function guiTest1() {
+    const table = document.getElementById("myTable");
+    const url  = '/test5'
+    oboe(url)
+    .node('*', function(x) {
+        // console.log( JSON.stringify( x ))
+        const row = table.insertRow(0);
+        const cell = row.insertCell(0);
+        console.log(" ..... " )
+        console.log( JSON.stringify( x, null, 2 ))
+    })
+    .done(function(data) {
+        console.log("All done")
+    })    
+}
+</script>
+
+<button onclick="getJson();">getJson()</button>
+<button onclick="getTest5();">getPostGres() test5</button>
+<button onclick="getTest6();">getPostGres() test6</button>
+<hr>
+
+<button onclick="guiTest1();">guiTest1()</button>
+<table id="myTable" border='1'>
+  </table>
+
+ </body>
 </html>

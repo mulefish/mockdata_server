@@ -86,10 +86,30 @@ const testFunc5 = (request, response) => {
       stream.on('data', (row) => {
         response.write(JSON.stringify(row));
         response.write(',');
+//        stream.pipe(JSONStream.stringify()).pipe(process.stdout)
+
       });      
   })
 }
 
+const testFunc6 = (request, response) => {
+    console.log("testFunc6 simple streams to http with simple query FOO ")
+    pool.connect(function(err, client, done) {
+        if (err) {
+            throw err;
+        }
+        const query = new QueryStream('SELECT ship_to from foo')
+        const stream = client.query(query)
+        stream.on('end', done)
+        stream.on('data', (row) => {
+          response.write(JSON.stringify(row));
+          response.write(',');
+  //        stream.pipe(JSONStream.stringify()).pipe(process.stdout)
+  
+        });      
+    })
+  }
+    
 
 
 app.get('/test', testFunc1)
@@ -97,6 +117,7 @@ app.get('/test2', testFunc2)
 app.get('/test3', testFunc3)
 app.get('/test4', testFunc4)
 app.get('/test5', testFunc5)
+app.get('/test6', testFunc6)
 app.listen(port, () => {
     const coloredPort = cc.bgGreen(port)
     console.log(`App running on port: ${coloredPort}`)

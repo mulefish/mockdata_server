@@ -75,11 +75,14 @@ const countEntries = (request, response) => {
   })
 }
 
+
+
+
 const getSomeEntries = (request, response ) => {
   caller.showStack()
 
   const start = request.query.start;
-  const stop = request.query.stop;
+    const stop = request.query.stop;
   const t1 = request.query.t1; 
 
   pool.query('SELECT * FROM entries limit 3', (error, results) => {
