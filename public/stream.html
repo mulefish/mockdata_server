@@ -15,6 +15,7 @@
      </ul>
 <hr>
 
+<hr/>
 <script src="/oboe-browser.js"></script>
 <script>
 function getJson() {
@@ -38,33 +39,24 @@ function getTest5() {
         console.log("All done")
     })    
 }
-function getTest6() {
-    let url  = '/test6'
-    console.log('test6()! ')
-    oboe(url)
-    .node('*', function(x) {
-        console.log(x)
-    })
-    .done(function(data) {
-        console.log("Finished")
-    })    
-}
 
 
-function guiTest1() {
-    const table = document.getElementById("myTable");
-    const url  = '/test5'
+function guiTest() {
+    document.getElementById("out").value = ""
+    
+    const url  = '/guiTest'
+    count = 0 
     oboe(url)
-    .node('*', function(x) {
-        // console.log( JSON.stringify( x ))
-        const row = table.insertRow(0);
-        const cell = row.insertCell(0);
-        console.log(" ..... " )
-        console.log( JSON.stringify( x, null, 2 ))
+    .node('!', function(x) {
+        count++
+        document.getElementById("out").value += count + "\n"
     })
     .done(function(data) {
         console.log("All done")
     })    
+    .fail(function(why) {
+        console.log("It failed\n" + JSON.stringify( why, null, 2 ) )
+    })
 }
 </script>
 
@@ -73,9 +65,8 @@ function guiTest1() {
 <button onclick="getTest6();">getPostGres() test6</button>
 <hr>
 
-<button onclick="guiTest1();">guiTest1()</button>
-<table id="myTable" border='1'>
-  </table>
-
+<button onclick="guiTest();">guiTest()</button>
+<hr/>
+<textarea rows='20' cols='100' id='out'></textarea>
  </body>
 </html>

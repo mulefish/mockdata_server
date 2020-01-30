@@ -111,6 +111,24 @@ const testFunc6 = (request, response) => {
   }
     
 
+  const guiTest = (request, response) => {
+    pool.connect(function(err, client, done) {
+        if (err) {
+            throw err;
+        }
+        const query = new QueryStream('select info from orders')
+        const stream = client.query(query)
+        stream.on('end', done)
+        stream.on('data', (row) => {
+            let x = JSON.stringify(row) + ","
+            console.log(x)
+            response.write(x);
+        });      
+    })
+  }
+  
+  
+
 
 app.get('/test', testFunc1)
 app.get('/test2', testFunc2)
@@ -118,6 +136,7 @@ app.get('/test3', testFunc3)
 app.get('/test4', testFunc4)
 app.get('/test5', testFunc5)
 app.get('/test6', testFunc6)
+app.get('/guiTest', guiTest)
 app.listen(port, () => {
     const coloredPort = cc.bgGreen(port)
     console.log(`App running on port: ${coloredPort}`)
