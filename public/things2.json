@@ -1,0 +1,11 @@
+{
+    "foods": [
+        {"name":1562,"data":{"fname":"fname","lname":"lname","sca":"sca","grp":"grp","aor":"aor","request_month":"June","end_month":"April","sNumber":2001,"trNumber":2001,"submitDate":"11/04/2019","assignee":"Jacqueline Cooper","productType":"D64","transactionType":"D64","groupId":8,"wholeSalerCode":"888795","scaReasonCode":"RGA"}},
+       {"name":"apple",        "colour":"red"},
+       {"name":"nuts",         "colour":"brown"}
+    ],
+    "badThings": [
+       {"name":"poison",       "colour":"pink"},
+       {"name":"broken_glass", "colour":"green"}
+    ]
+ }

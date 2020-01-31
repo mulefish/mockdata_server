@@ -43,13 +43,12 @@ function getTest5() {
 
 function guiTest() {
     document.getElementById("out").value = ""
-    
-    const url  = '/guiTest'
+    const url  = '/guiTest2'
     count = 0 
     oboe(url)
     .node('!', function(x) {
         count++
-        document.getElementById("out").value += count + "\n"
+        document.getElementById("out").value += JSON.stringify(x)
     })
     .done(function(data) {
         console.log("All done")
@@ -58,6 +57,22 @@ function guiTest() {
         console.log("It failed\n" + JSON.stringify( why, null, 2 ) )
     })
 }
+function jsonTest() { 
+
+    oboe('/things2.json')
+   .node('foods.*', function( foodThing ){
+    document.getElementById("out").value += JSON.stringify(foodThing) + "\n"
+   })
+//    .node('badThings.*', function( badThing ){
+//       console.log( 'Stay away from', badThing.name);
+//    })   
+
+   .done(function(things){
+    response.write(']}')
+
+   });
+
+}
 </script>
 
 <button onclick="getJson();">getJson()</button>
@@ -65,7 +80,10 @@ function guiTest() {
 <button onclick="getTest6();">getPostGres() test6</button>
 <hr>
 
-<button onclick="guiTest();">guiTest()</button>
+<button onclick="guiTest();">guiTest</button>
+
+<button onclick="jsonTest();">jsonTest()</button>
+
 <hr/>
 <textarea rows='20' cols='100' id='out'></textarea>
  </body>

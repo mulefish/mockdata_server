@@ -80,10 +80,11 @@ const testFunc5 = (request, response) => {
       if (err) {
           throw err;
       }
-      const query = new QueryStream('SELECT * FROM entries limit 10')
+      const query = new QueryStream('SELECT * FROM entries limit 3')
       const stream = client.query(query)
       stream.on('end', done)
       stream.on('data', (row) => {
+          console.log( JSON.stringify(row))
         response.write(JSON.stringify(row));
         response.write(',');
 //        stream.pipe(JSONStream.stringify()).pipe(process.stdout)
@@ -112,11 +113,12 @@ const testFunc6 = (request, response) => {
     
 
   const guiTest = (request, response) => {
+    console.log("guiTest")
     pool.connect(function(err, client, done) {
         if (err) {
             throw err;
         }
-        const query = new QueryStream('select info from orders')
+        const query = new QueryStream('select info from orders where id = 7')
         const stream = client.query(query)
         stream.on('end', done)
         stream.on('data', (row) => {
@@ -124,6 +126,26 @@ const testFunc6 = (request, response) => {
             console.log(x)
             response.write(x);
         });      
+    })
+  }
+  
+  
+  const guiTest2 = (request, response) => {
+
+    pool.connect(function(err, client, done) {
+        if (err) {
+            throw err;
+        }
+        const query = new QueryStream('select info from orders')
+        response.write('{"foods": [')
+        const stream = client.query(query)
+        stream.on('end', done)
+        stream.on('data', (row) => {
+            x = JSON.stringify(row)
+            response.write(x);
+            console.log(x)
+        });      
+        response.write("]}")
     })
   }
   
@@ -137,6 +159,7 @@ app.get('/test4', testFunc4)
 app.get('/test5', testFunc5)
 app.get('/test6', testFunc6)
 app.get('/guiTest', guiTest)
+app.get('/guiTest2', guiTest2)
 app.listen(port, () => {
     const coloredPort = cc.bgGreen(port)
     console.log(`App running on port: ${coloredPort}`)
