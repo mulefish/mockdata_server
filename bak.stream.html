@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
+    </head>
+<body>
+    <ul>
+        <li><a href='index.html'>index.html</a></li>
+        <li><a href='about.html'>about.html</a></li>
+        <li><a href='tdd.html'>tdd.html</a></li>
+        <li><a href='stream.html'>stream.html</a></li>
+
+
+
+     </ul>
+<hr>
+
+<hr/>
+<script src="/oboe-browser.js"></script>
+<script>
+function getJson() {
+    let url  = '/product.json'
+    oboe(url)
+    .node('*', function(x) {
+        console.log( JSON.stringify( x ))
+    })
+    .done(function(data) {
+        console.log("Finished")
+    })    
+}
+function getTest5() {
+    let url  = '/test5'
+    console.log('test5()')
+    oboe(url)
+    .node('*', function(x) {
+        console.log( JSON.stringify( x ))
+    })
+    .done(function(data) {
+        console.log("All done")
+    })    
+}
+
+
+function guiTest() {
+    document.getElementById("out").value = ""
+    const url  = '/guiTest2'
+    count = 0 
+    oboe(url)
+    .node('!', function(x) {
+        count++
+        document.getElementById("out").value += JSON.stringify(x)
+    })
+    .done(function(data) {
+        console.log("All done")
+    })    
+    .fail(function(why) {
+        console.log("It failed\n" + JSON.stringify( why, null, 2 ) )
+    })
+}
+function jsonTest() { 
+
+    oboe('/things2.json')
+   .node('foods.*', function( foodThing ){
+    document.getElementById("out").value += JSON.stringify(foodThing) + "\n"
+   })
+//    .node('badThings.*', function( badThing ){
+//       console.log( 'Stay away from', badThing.name);
+//    })   
+
+   .done(function(things){
+    response.write(']}')
+
+   });
+
+}
+</script>
+
+<button onclick="getJson();">getJson()</button>
+<button onclick="getTest5();">getPostGres() test5</button>
+<button onclick="getTest6();">getPostGres() test6</button>
+<hr>
+
+<button onclick="guiTest();">guiTest</button>
+
+<button onclick="jsonTest();">jsonTest()</button>
+
+<hr/>
+<textarea rows='20' cols='100' id='out'></textarea>
+ </body>
+</html>

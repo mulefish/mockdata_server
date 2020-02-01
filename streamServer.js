@@ -131,17 +131,16 @@ const testFunc6 = (request, response) => {
   
   
   const guiTest2 = (request, response) => {
-
     pool.connect(function(err, client, done) {
         if (err) {
             throw err;
         }
         const query = new QueryStream('select info from orders')
-        response.write('{"foods": [')
+        response.write('{"info": [')
         const stream = client.query(query)
         stream.on('end', done)
         stream.on('data', (row) => {
-            x = JSON.stringify(row)
+            const x = JSON.stringify(row)
             response.write(x);
             console.log(x)
         });      
