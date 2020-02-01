@@ -14,6 +14,24 @@
 <hr/>
 <script>
 
+function flatfile() {
+    document.getElementById("out").value = ""
+    const url  = 'things2.json'
+    count = 0 
+    oboe(url)
+    .node('foods.*', function(x) {
+        count++
+        document.getElementById("out").value += JSON.stringify(x) + "\n"
+    })
+    .done(function(data) {
+        console.log("All done")
+    })    
+    .fail(function(why) {
+        console.log("It failed\n" + JSON.stringify( why, null, 2 ) )
+    })
+}
+
+
 function guiTest() {
     document.getElementById("out").value = ""
     const url  = '/guiTest2'
@@ -35,7 +53,9 @@ function guiTest() {
 <table border='1'>
 <tr>
 <td valign='top'>
-    <button onclick="guiTest();">guiTest</button>
+    <button onclick="guiTest();">guiTest ( express ) </button>
+    <button onclick="flatfile();">flatfile ( raw json file ) </button>
+    
     <hr/>
     <textarea rows='20' cols='50' id='out'></textarea>
 </td>
